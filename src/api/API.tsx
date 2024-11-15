@@ -1,44 +1,31 @@
-const searchGithub = async () => {
+// src/api/API.tsx
+
+// You can also type the response to make it clearer
+
+// Function to fetch the next candidate
+const fetchNextCandidate = async () => {
   try {
-    const start = Math.floor(Math.random() * 100000000) + 1;
-    // console.log(import.meta.env);
+    const start = Math.floor(Math.random() * 100000000) + 1;  // Random starting point for users
     const response = await fetch(
-      `https://api.github.com/users?since=${start}`,
+      `https://api.github.com/users?since=${start}`,  // API URL
       {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,  // Authorization header
         },
       }
     );
-    // console.log('Response:', response);
-    const data = await response.json();
+
+    const data = await response.json();  // Parse the JSON response
     if (!response.ok) {
-      throw new Error('invalid API response, check the network tab');
+      throw new Error('Failed to fetch candidate');
     }
-    // console.log('Data:', data);
-    return data;
+
+    return data;  // Return the data (e.g., array of users)
   } catch (err) {
-    // console.log('an error occurred', err);
-    return [];
+    console.error('Error fetching next candidate:', err);
+    return [];  // Return empty array if there's an error
   }
 };
 
-const searchGithubUser = async (username: string) => {
-  try {
-    const response = await fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
-      },
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error('invalid API response, check the network tab');
-    }
-    return data;
-  } catch (err) {
-    // console.log('an error occurred', err);
-    return {};
-  }
-};
-
-export { searchGithub, searchGithubUser };
+// Exporting the function so it can be used in other files
+export { fetchNextCandidate };

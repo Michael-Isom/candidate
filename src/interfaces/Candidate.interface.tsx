@@ -1,10 +1,11 @@
+// src/pages/CandidateSearch.tsx
+
 import React, { useState, useEffect } from 'react';
-import { Candidate } from '../models/Candidate'; // assuming the correct path is '../models/Candidate'
+import { Candidate } from '../models/Candidate'; // Correct import for the named export
 import { fetchNextCandidate } from '../api/candidateAPI'; // ensure fetchNextCandidate is correctly exported from candidateAPI
 
 const CandidateSearch: React.FC = () => {
   const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null);
-  // const [potentialCandidates, setPotentialCandidates] = useState<Candidate[]>([]);
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
@@ -27,7 +28,8 @@ const CandidateSearch: React.FC = () => {
 
   const handleAddCandidate = () => {
     if (currentCandidate) {
-      setPotentialCandidates((prev) => [...prev, currentCandidate]);
+      // Assuming you have a way to store potential candidates (like useState or localStorage)
+      // setPotentialCandidates((prev) => [...prev, currentCandidate]); // Add to list
       loadNextCandidate();
     }
   };
