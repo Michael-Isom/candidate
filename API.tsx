@@ -1,4 +1,3 @@
-// api.tsx
 /// <reference types="vite/client" />
 
 // GithubUser interface with `id` explicitly defined
@@ -33,7 +32,7 @@ const searchGithub = async (): Promise<Candidate[]> => {
       `https://api.github.com/users?since=${start}`,
       {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`, // GitHub token from environment variable
         },
       }
     );
@@ -66,7 +65,7 @@ const searchGithubUser = async (username: string): Promise<Candidate | null> => 
   try {
     const response = await fetch(`https://api.github.com/users/${username}`, {
       headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`, // GitHub token from environment variable
       },
     });
 
