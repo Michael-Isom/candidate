@@ -1,76 +1,77 @@
+// api.tsx
 /// <reference types="vite/client" />
 
-// Define TypeScript interface for ImportMetaEnv
-interface ImportMetaEnv {
-  readonly VITE_GITHUB_TOKEN: string;
+// GithubUser interface with `id` explicitly defined
+export interface GithubUser {
+  login: string;
+  avatar_url: string;
+  location: string;
+  email: string;
+  company: string;
+  html_url: string;
+  id: number; // Ensure `id` is included and defined as number
+  name: string;
 }
 
-// Extend the ImportMeta interface
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
-
-// Define the Candidate interface to ensure proper typing for GitHub user data
+// Candidate interface with `id` defined as a string
 export interface Candidate {
-  login: string;      // Username
-  avatar_url: string; // Avatar URL
-  location: string;   // Location
-  email: string;      // Email (might be null depending on the user)
-  company: string;    // Company (might be null)
-  html_url: string;   // Profile URL
-  id: number;         // Unique ID
-  name: string;       // Full name
+  login: string;
+  avatar_url: string;
+  location: string;
+  email: string;
+  company: string;
+  html_url: string;
+  id: string; // `id` in Candidate is a string
+  name: string;
 }
 
-// Fetch a random list of GitHub users to be used in the candidate search
+// Fetch GitHub users
 const searchGithub = async (): Promise<Candidate[]> => {
   try {
     const start = Math.floor(Math.random() * 100000000) + 1; // Random start for pagination
     const response = await fetch(
-      `https://api.github.com/users?since=${start}`, // Fetch random users after the given "start"
+      `https://api.github.com/users?since=${start}`,
       {
         headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`, // Include GitHub token for auth
+          Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
         },
       }
     );
 
-    const data = await response.json();
-    
-    // Ensure that the response is an array of candidates
+    const data: GithubUser[] = await response.json();
+
     if (!response.ok) {
       throw new Error('Invalid API response. Check the network tab for details.');
     }
 
-    // Map API response to candidates' specific structure
-    return data.map((user: any) => ({
+    // Map GitHub users to candidates
+    return data.map((user: GithubUser) => ({
       login: user.login,
       avatar_url: user.avatar_url,
       location: user.location || "Not provided",
       email: user.email || "Not provided",
       company: user.company || "Not provided",
       html_url: user.html_url,
-      id: user.id,
-      name: user.name || user.login,  // Use username if name is not available
+      id: user.id.toString(), // Ensure `id` is converted to string for Candidate
+      name: user.name || user.login,
     }));
   } catch (err) {
-    console.error('An error occurred while fetching GitHub users:', err);
+    console.error('Error fetching GitHub users:', err);
     return [];
   }
 };
 
-// Fetch a specific GitHub user by username
+// Fetch a specific GitHub user
 const searchGithubUser = async (username: string): Promise<Candidate | null> => {
   try {
     const response = await fetch(`https://api.github.com/users/${username}`, {
       headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`, // Include GitHub token for auth
+        Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
       },
     });
 
-    const data = await response.json();
+    const data: GithubUser = await response.json();
 
-    // Check if the response is okay and that we have valid user data
     if (!response.ok) {
       throw new Error(`User ${username} not found`);
     }
@@ -82,13 +83,13 @@ const searchGithubUser = async (username: string): Promise<Candidate | null> => 
       email: data.email || "Not provided",
       company: data.company || "Not provided",
       html_url: data.html_url,
-      id: data.id,
+      id: data.id.toString(), // Ensure `id` is converted to string for Candidate
       name: data.name || data.login,
     };
   } catch (err) {
-    console.error(`An error occurred while fetching user ${username}:`, err);
+    console.error(`Error fetching user ${username}:`, err);
     return null;
   }
 };
 
-export { searchGithub, searchGithubUser };  // Ensure both functions are exported
+export { searchGithub, searchGithubUser };

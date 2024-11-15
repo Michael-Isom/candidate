@@ -1,11 +1,11 @@
-import React from 'react';
+// src/pages/ErrorPage.tsx
 
-const ErrorPage = () => {
+const ErrorPage: React.FC = () => {
   return (
-    <section>
-      <h1>404: Page Not Found</h1>
-      <h1>¯\_(ツ)_/¯</h1>
-    </section>
+    <div>
+      <h1>Error Page</h1>
+      <p>Something went wrong.</p>
+    </div>
   );
 };
 

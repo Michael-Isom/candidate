@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { searchGithubUser as fetchGithubUser } from '../api/API'; // Assuming this import is correct
-import { Candidate } from '../interfaces/Candidate.interface'; // Corrected import
+import { fetchGithubUser } from '../api/API'; // Named import for fetchGithubUser
+import type { Candidate } from '../interfaces/Candidate.interface'; // Correctly importing Candidate type
 
 const CandidateSearch: React.FC = () => {
   const [username, setUsername] = useState<string>('');  // State for storing the GitHub username input
@@ -24,7 +24,7 @@ const CandidateSearch: React.FC = () => {
         email,
         company,
         html_url: '',    // Placeholder for now
-        id: Date.now(),  // Use current time as a simple unique ID
+        id: Date.now().toString(),  // Use current time as a simple unique ID, converted to string
         name: fullName,
       };
       const updatedCandidates = [...candidates, newCandidate];
@@ -41,6 +41,28 @@ const CandidateSearch: React.FC = () => {
       alert('Please fill in all the fields.');
     }
   };
+
+  // Function to fetch candidate data from GitHub API
+  const handleFetchCandidate = async () => {
+    if (username) {
+      try {
+        const user = await fetchGithubUser(username); // Fetch user data using GitHub API
+        setFullName(user.name || '');
+        setLocation(user.location || '');
+        setEmail(user.email || '');
+        setCompany(user.company || '');
+      } catch (error) {
+        alert('Failed to fetch candidate data.');
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Fetch candidate data whenever the username changes
+    if (username) {
+      handleFetchCandidate();
+    }
+  }, [username]);
 
   return (
     <div>
